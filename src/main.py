@@ -41,19 +41,26 @@ class Stack:
             aux = aux.siguiente
         return cadena
     # La estrategia es la siguientes:
-    # 1. Buscar el elemento 1 e ir sumando lo elemento que coincidan
-    # 2. Buscar el elemento 2 e ir sumando lo elemento que coincidan
+    # 1. Buscar el elemento 1 e ir sumando el elemento que coincida
+    # 2. Buscar el elemento 2 e ir sumando el elemento que coincida
     # 3. Por ultimo comparar la igualdad (primer paréntesis "(" y segundo paréntesis ")")
+    # extra. Comparar la posiciones de los elementos para determinar su ordenamiento
     def buscar_elementos(self, elemento_1, elemento_2):
+        pos = 0
+        pos_e = [0, 0]
         elementos_encontrados = [0, 0]
         aux = self.puntero
         while not self.esta_vacio(aux):
             if aux.caracter == elemento_1:
                 elementos_encontrados[0] = elementos_encontrados[0] + 1
+                pos_e[0] = pos
             if aux.caracter == elemento_2:
                 elementos_encontrados[1] = elementos_encontrados[1] + 1
+                pos_e[1] = pos
             aux = aux.siguiente
-        return elementos_encontrados[0] == elementos_encontrados[1]
+            pos = pos + 1
+        return [pos_e[1] < pos_e[0], elementos_encontrados[0] == elementos_encontrados[1]]
+        
     def esta_vacio(self, puntero):
         return puntero == None
     
@@ -84,7 +91,13 @@ def main():
         print('3> Borrar todos los nodos de la pila')
         print('4> Salir')
         print()
-        opcion = int(input('Ingrese una opcion: '))
+        try:
+            opcion = int(input('Ingrese una opcion: '))
+        except ValueError:
+            print('-- Error -- Ingrese un opción valida')
+            input('Presione cualquier tecla para continuar...')
+            clear()
+            continue
         print()
         if controlar_opcion(opcion):
             if opcion == 1:
@@ -100,7 +113,12 @@ def main():
                 else:
                     estado_del_analisis_en_general = [0, 0, 0] 
                     if cadena_de_caracteres.find('(') != -1 or cadena_de_caracteres.find(')') != -1: 
-                        if pila__de_caracteres.buscar_elementos('(', ')'):
+                        resultado = pila__de_caracteres.buscar_elementos('(', ')')
+                        if resultado[0]:
+                            print('\t-- ORDEN -- Los paréntesis están ordenados')
+                        else:
+                            print('\t-- ORDEN -- Los paréntesis no están ordenados')
+                        if resultado[1]:
                             print('\tLos paréntesis están equilibrados')
                             estado_del_analisis_en_general[0] = 1
                         else:
@@ -110,7 +128,12 @@ def main():
                         print('\tNo se encontró en la pila elementos que coincida con un "paréntesis"')
                         estado_del_analisis_en_general[0] = -2
                     if cadena_de_caracteres.find('[') != -1 or cadena_de_caracteres.find(']') != -1:
-                        if pila__de_caracteres.buscar_elementos('[', ']'):
+                        resultado = pila__de_caracteres.buscar_elementos('[', ']')
+                        if resultado[0]:
+                            print('\t-- ORDEN -- Los corchetes están ordenados')
+                        else:
+                            print('\t-- ORDEN -- Los corchetes no están ordenados')
+                        if resultado[1]:
                             print('\tLos corchetes están equilibrados')
                             estado_del_analisis_en_general[1] = 1
                         else:
@@ -120,7 +143,12 @@ def main():
                         print('\tNo se encontró en la pila elementos que coincida con un "corchete"')
                         estado_del_analisis_en_general[1] = -2
                     if cadena_de_caracteres.find('{') != -1 or cadena_de_caracteres.find('}') != -1:
-                        if pila__de_caracteres.buscar_elementos('{', '}'):
+                        resultado = pila__de_caracteres.buscar_elementos('{', '}')
+                        if resultado[0]:
+                            print('\t-- ORDEN -- Las llaves están ordenados')
+                        else:
+                            print('\t-- ORDEN -- Las llaves no están ordenados')
+                        if resultado[1]:
                             print('\tLas llaves están equilibrados')
                             estado_del_analisis_en_general[2] = 1
                         else:
